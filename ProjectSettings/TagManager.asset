@@ -8,6 +8,7 @@ TagManager:
   - girl
   - boldor
   - coin
+  - heart
   layers:
   - Default
   - TransparentFX

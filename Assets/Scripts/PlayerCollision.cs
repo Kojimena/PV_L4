@@ -11,5 +11,15 @@ public class PlayerCollision : MonoBehaviour
             // Destruir
             Destroy(other.gameObject);
         }
+        
+        if (other.CompareTag("heart"))
+        {
+            
+            GameEventsBehaviour.Instance.RaiseLifeCollected();
+            
+            // Destruir
+            Destroy(other.gameObject);
+            
+        }
     }
 }
