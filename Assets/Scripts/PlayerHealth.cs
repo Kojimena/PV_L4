@@ -7,14 +7,24 @@ public class PlayerHealth : MonoBehaviour
     public int maxLives = 10;
     private int currentLives;
     [SerializeField] private float fallThreshold = -10f;
+    
+    private void OnEnable()
+    {
+        if (GameEventsBehaviour.Instance != null)
+            GameEventsBehaviour.Instance.OnLifeCollected += OnLifePickup;
+    }
 
-    [Header("UI")]
-    public TMP_Text livesText; 
-
+    private void OnDisable()
+    {
+        if (GameEventsBehaviour.Instance != null)
+            GameEventsBehaviour.Instance.OnLifeCollected -= OnLifePickup;
+    }
+    
     void Start()
     {
         currentLives = maxLives;
-        UpdateLivesUI();
+        GameEventsBehaviour.Instance.RaiseLivesChanged(currentLives, maxLives);
+
     }
     
     void Update()
@@ -32,22 +42,21 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
-        currentLives -= amount;
-        UpdateLivesUI();
+        currentLives = Mathf.Clamp(currentLives - amount, 0, maxLives);
+        GameEventsBehaviour.Instance.RaiseLivesChanged(currentLives, maxLives);
 
         if (currentLives <= 0)
         {
             Die();
         }
     }
-
-    private void UpdateLivesUI()
+    
+    private void OnLifePickup()
     {
-        if (livesText != null)
-        {
-            livesText.text = "Vidas: " + currentLives;
-        }
+        currentLives = Mathf.Clamp(currentLives + 1, 0, maxLives);
+        GameEventsBehaviour.Instance.RaiseLivesChanged(currentLives, maxLives);
     }
+    
 
     private void Die()
     {

@@ -7,6 +7,8 @@ public class UIManager : MonoBehaviour
 
     [Header("UI References")]
     [SerializeField] private TMP_Text coinText;
+    [SerializeField] private TMP_Text livesText;
+
     
     private int coinCount;
 
@@ -26,18 +28,33 @@ public class UIManager : MonoBehaviour
     private void OnEnable()
     {
         if (GameEventsBehaviour.Instance != null)
+        {
             GameEventsBehaviour.Instance.OnCoinCollected += UpdateCoins;
+            GameEventsBehaviour.Instance.OnLivesChanged += UpdateLivesUI;
+        }
+
+
     }
 
     private void OnDisable()
     {
         if (GameEventsBehaviour.Instance != null)
+        {
             GameEventsBehaviour.Instance.OnCoinCollected -= UpdateCoins;
+            GameEventsBehaviour.Instance.OnLivesChanged -= UpdateLivesUI;
+        }
     }
+    
 
     private void UpdateCoins()
     {
         coinCount++;
         coinText.text = $"Coins: {coinCount}";
+    }
+    
+    private void UpdateLivesUI(int currentLives, int maxLives)
+    {
+        
+        livesText.text = $"Lives: {currentLives}/{maxLives}";
     }
 }
