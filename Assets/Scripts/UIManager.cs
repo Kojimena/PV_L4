@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
+
 
 public class UIManager : MonoBehaviour
 {
@@ -8,9 +11,17 @@ public class UIManager : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private TMP_Text coinText;
     [SerializeField] private TMP_Text livesText;
+    
+    
+    [Header("Inventory UI")]
+    [SerializeField] private Transform inventoryContent; 
+    [SerializeField] private GameObject inventoryItemPrefab; 
 
     
     private int coinCount;
+    private List<PickUpData> inventory = new List<PickUpData>();
+
+
 
     private void Awake()
     {
@@ -31,6 +42,7 @@ public class UIManager : MonoBehaviour
         {
             GameEventsBehaviour.Instance.OnCoinCollected += UpdateCoins;
             GameEventsBehaviour.Instance.OnLivesChanged += UpdateLivesUI;
+            GameEventsBehaviour.Instance.OnItemInventoryCollected += AddToInventory;
         }
 
 
@@ -42,6 +54,7 @@ public class UIManager : MonoBehaviour
         {
             GameEventsBehaviour.Instance.OnCoinCollected -= UpdateCoins;
             GameEventsBehaviour.Instance.OnLivesChanged -= UpdateLivesUI;
+            GameEventsBehaviour.Instance.OnItemInventoryCollected -= AddToInventory;
         }
     }
     
@@ -57,4 +70,20 @@ public class UIManager : MonoBehaviour
         
         livesText.text = $"Lives: {currentLives}/{maxLives}";
     }
+    
+    private void AddToInventory(PickUpData data)
+    {
+        if (data == null) return;
+        //print ("Adding to inventory: " + data.itemName);
+        inventory.Add(data);
+        Debug.Log($"Adding to inventory: {data.displayName} inventory : {inventory.Count}");
+
+
+        GameObject itemGO = Instantiate(inventoryItemPrefab, inventoryContent);
+        
+        Image icon = itemGO.GetComponentInChildren<Image>();
+
+        if (icon) icon.sprite = data.icon;
+    }
+
 }
