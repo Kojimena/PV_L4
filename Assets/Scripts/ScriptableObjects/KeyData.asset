@@ -9,12 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0895012d8d2146339cb77fe1a61c2c7, type: 3}
-  m_Name: BotiquinData
+  m_Script: {fileID: 11500000, guid: 05a0b46c38133470ebf60805a1d1ac06, type: 3}
+  m_Name: KeyData
   m_EditorClassIdentifier: 
-  displayName: Aid kit
-  icon: {fileID: 21300000, guid: 5e86c599738ec4a40828b1839f3b798b, type: 3}
-  pickUpSound: {fileID: 8300000, guid: c0755d22f67d34380bd7b3bb26a828a8, type: 3}
+  displayName: Key
+  icon: {fileID: 21300000, guid: 90003132655ac4f2790da2348677b566, type: 3}
+  pickUpSound: {fileID: 8300000, guid: d4f425149877940c68caeb45f047c046, type: 3}
   worldPrefab: {fileID: 0}
   goesToInventory: 1
-  healthRestored: 3

@@ -9,6 +9,7 @@ TagManager:
   - boldor
   - coin
   - heart
+  - key
   layers:
   - Default
   - TransparentFX

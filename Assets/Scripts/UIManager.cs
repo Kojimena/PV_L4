@@ -74,16 +74,16 @@ public class UIManager : MonoBehaviour
     private void AddToInventory(PickUpData data)
     {
         if (data == null) return;
-        //print ("Adding to inventory: " + data.itemName);
         inventory.Add(data);
-        Debug.Log($"Adding to inventory: {data.displayName} inventory : {inventory.Count}");
 
 
         GameObject itemGO = Instantiate(inventoryItemPrefab, inventoryContent);
         
         Image icon = itemGO.GetComponentInChildren<Image>();
+        TMP_Text nameText = itemGO.GetComponentInChildren<TMP_Text>();
 
         if (icon) icon.sprite = data.icon;
+        if (nameText) nameText.text = data.displayName;
     }
 
 }

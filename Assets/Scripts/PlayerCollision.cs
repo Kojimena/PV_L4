@@ -21,5 +21,13 @@ public class PlayerCollision : MonoBehaviour
             Destroy(other.gameObject);
             
         }
+        
+        if (other.CompareTag("key"))
+        {
+            
+            // Destruir
+            Destroy(other.gameObject);
+            
+        }
     }
 }
