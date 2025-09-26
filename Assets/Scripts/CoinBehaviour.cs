@@ -6,6 +6,7 @@ public class CoinBehaviour : MonoBehaviour
    [SerializeField] private ValuedItemData coinData;
    
    
+   
    private void OnEnable()
    {
       GameEventsBehaviour.Instance.OnCoinCollected += OnCoinCollectedFunction;
@@ -18,7 +19,10 @@ public class CoinBehaviour : MonoBehaviour
    
    private void OnCoinCollectedFunction()
    {
-      Debug.Log($"Moneda recogida: {coinData.displayName} con valor {coinData.value}");
+      if (coinData.pickUpSound != null)
+      {
+         AudioManager.instance.PlayAudioClip(coinData.pickUpSound);
+      }
    }
    
 }
