@@ -131,13 +131,6 @@ public class UIManager : MonoBehaviour
     
     private void UpdateLivesUI(int currentLives, int maxLives)
     {
-        if (!livesPanel)
-        {
-            //TODO: quitar este warning y manejar el error de otra forma
-            Debug.LogWarning("UIManager: livesPanel es null o fue destruido.");
-            return;
-        }
-
         for (int i = livesPanel.childCount - 1; i >= 0; i--)
         {
             var child = livesPanel.GetChild(i);
@@ -204,5 +197,73 @@ public class UIManager : MonoBehaviour
     {
         return amount > 1 ? $"{nameitem} x{amount}" : nameitem;
     }
+    
+    
+    public bool TryConsumeItem(string itemName, out int itemValue)
+    {
+        
+        itemValue = 0;
+
+        PickUpData foundStackable = null;
+        int currentAmount = 0;
+
+        foreach (var kvp in inventoryStacks)
+        {
+            if (kvp.Key.displayName == itemName && kvp.Value > 0)
+            {
+                foundStackable = kvp.Key;
+                currentAmount = kvp.Value;
+                break;
+            }
+        }
+
+        if (foundStackable != null)
+        {
+            if (foundStackable is HealthItemData valued)
+                itemValue = valued.healthRestored;
+
+            int newAmount = currentAmount - 1;
+
+            if (newAmount > 0)
+            {
+                inventoryStacks[foundStackable] = newAmount;
+                UpdateRow(foundStackable, newAmount);
+            }
+            else
+            {
+                inventoryStacks.Remove(foundStackable);
+                if (inventoryRows.TryGetValue(foundStackable, out var row) && row)
+                    Destroy(row);
+                inventoryRows.Remove(foundStackable);
+            }
+
+            return true;
+        }
+
+        PickUpData foundNonStack = null;
+        foreach (var data in inventoryRows.Keys)
+        {
+            if (data.displayName == itemName)
+            {
+                foundNonStack = data;
+                break;
+            }
+        }
+
+        if (foundNonStack != null)
+        {
+            if (foundNonStack is ValuedItemData valued2)
+                itemValue = valued2.value;
+
+            if (inventoryRows.TryGetValue(foundNonStack, out var row2) && row2)
+                Destroy(row2);
+            inventoryRows.Remove(foundNonStack);
+
+            return true;
+        }
+
+        return false;
+    }
+
 
 }

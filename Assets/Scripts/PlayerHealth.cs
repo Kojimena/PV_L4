@@ -33,7 +33,27 @@ public class PlayerHealth : MonoBehaviour
         {
             Die();
         }
+        
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            if (UIManager.Instance != null &&
+                UIManager.Instance.TryConsumeItem("Aid kit", out int healValue))
+            {
+                Debug.Log(" para curar " + healValue + " vidas.");
+                Heal(healValue);
+            }
+        }
+
     }
+    
+    public void Heal(int amount)
+    {
+        Debug.Log("Curando " + amount + " vidas.");
+        if (amount <= 0) return;
+        currentLives = Mathf.Clamp(currentLives + amount, 0, maxLives);
+        GameEventsBehaviour.Instance.RaiseLivesChanged(currentLives, maxLives);
+    }
+
     
 
     public void TakeDamage(int amount)
