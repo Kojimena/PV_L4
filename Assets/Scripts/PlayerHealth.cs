@@ -31,14 +31,10 @@ public class PlayerHealth : MonoBehaviour
     {
         if (transform.position.y < fallThreshold)
         {
-            RestartScene();
+            Die();
         }
     }
     
-    private void RestartScene()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
 
     public void TakeDamage(int amount)
     {
