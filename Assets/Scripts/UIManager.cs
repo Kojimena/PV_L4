@@ -15,6 +15,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Transform livesPanel;
     [SerializeField] private GameObject heartPrefab;
     
+    [Header("Door UI")]
+    [SerializeField] private TMP_Text doorText;
+    [SerializeField] private GameObject doorObject;
     
     [Header("Inventory UI")]
     [SerializeField] private Transform inventoryContent; 
@@ -51,6 +54,7 @@ public class UIManager : MonoBehaviour
             GameEventsBehaviour.Instance.OnCoinCollected += UpdateCoins;
             GameEventsBehaviour.Instance.OnLivesChanged += UpdateLivesUI;
             GameEventsBehaviour.Instance.OnItemInventoryCollected += AddToInventory;
+            GameEventsBehaviour.Instance.OnDoorEntered += UpdateDoorUI;
         }
 
 
@@ -63,8 +67,57 @@ public class UIManager : MonoBehaviour
             GameEventsBehaviour.Instance.OnCoinCollected -= UpdateCoins;
             GameEventsBehaviour.Instance.OnLivesChanged -= UpdateLivesUI;
             GameEventsBehaviour.Instance.OnItemInventoryCollected -= AddToInventory;
+            GameEventsBehaviour.Instance.OnDoorEntered -= UpdateDoorUI;
         }
     }
+    
+    private void UpdateDoorUI()
+    {
+        if (HasKeyByName("Key")) 
+        {
+            if (doorObject) doorObject.SetActive(false);
+            if (doorText) doorText.text = string.Empty;
+        }
+        else
+        {
+            doorText.gameObject.SetActive(true);
+            if (doorText)
+            {
+                doorText.text = "Necesitas una llave para abrir la puerta";
+                StopAllCoroutines(); 
+                StartCoroutine(HideDoorTextAfter(2.5f)); 
+            }
+        }
+    }
+    
+    private System.Collections.IEnumerator HideDoorTextAfter(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        if (doorText) doorText.text = string.Empty;
+    }
+
+    
+    private bool HasKeyByName(string keyName)
+    {
+        foreach (var kvp in inventoryStacks)
+        {
+            if (kvp.Key.displayName == keyName && kvp.Value > 0)
+            {
+                return true;
+            }
+        }
+    
+        foreach (var row in inventoryRows.Keys)
+        {
+            if (row.displayName == keyName)
+            {
+                return true;
+            }
+        }
+    
+        return false;
+    }
+
     
 
     private void UpdateCoins()

@@ -11,6 +11,7 @@ TagManager:
   - heart
   - key
   - magnet
+  - door
   layers:
   - Default
   - TransparentFX

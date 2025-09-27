@@ -13,6 +13,8 @@ public class GameEventsBehaviour : MonoBehaviour
     public event Action<int,int> OnLivesChanged; // Evento para cuando cambian las vidas
     
     public event Action<PickUpData> OnItemInventoryCollected; // Evento para cuando se recoge un item de inventario
+    
+    public event Action OnDoorEntered; // Evento para cuando se entra en una puerta
 
     
     private void Awake()
@@ -47,6 +49,11 @@ public class GameEventsBehaviour : MonoBehaviour
     public void RaiseItemInventoryCollected(PickUpData itemData)
     {
         OnItemInventoryCollected?.Invoke(itemData);
+    }
+    
+    public void RaiseDoorEntered()
+    {
+        OnDoorEntered?.Invoke();
     }
     
     

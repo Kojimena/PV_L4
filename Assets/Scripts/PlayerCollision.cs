@@ -29,5 +29,10 @@ public class PlayerCollision : MonoBehaviour
             Destroy(other.gameObject);
             
         }
+        
+        if (other.CompareTag("door"))
+        {
+            GameEventsBehaviour.Instance.RaiseDoorEntered();
+        }
     }
 }
