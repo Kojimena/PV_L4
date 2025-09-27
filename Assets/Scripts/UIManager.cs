@@ -10,7 +10,10 @@ public class UIManager : MonoBehaviour
 
     [Header("UI References")]
     [SerializeField] private TMP_Text coinText;
-    [SerializeField] private TMP_Text livesText;
+   
+    [Header("Lives UI")]
+    [SerializeField] private Transform livesPanel;
+    [SerializeField] private GameObject heartPrefab;
     
     
     [Header("Inventory UI")]
@@ -19,7 +22,12 @@ public class UIManager : MonoBehaviour
 
     
     private int coinCount;
-    private List<PickUpData> inventory = new List<PickUpData>();
+    
+    // private List<PickUpData> inventory = new List<PickUpData>();
+    
+    private readonly Dictionary<PickUpData, int> inventoryStacks = new();
+    private readonly Dictionary<PickUpData, GameObject> inventoryRows = new();
+
 
 
 
@@ -67,23 +75,70 @@ public class UIManager : MonoBehaviour
     
     private void UpdateLivesUI(int currentLives, int maxLives)
     {
-        
-        livesText.text = $"Lives: {currentLives}/{maxLives}";
+        foreach (Transform child in livesPanel)
+        {
+            Destroy(child.gameObject);
+        }
+
+        for (int i = 0; i < currentLives; i++)
+        {
+            Instantiate(heartPrefab, livesPanel);
+        }
     }
+
     
     private void AddToInventory(PickUpData data)
     {
         if (data == null) return;
-        inventory.Add(data);
 
+        if (!data.stackable)
+        {
+            CreateRow(data, 1, forceNewRow:true);
+            return;
+        }
 
-        GameObject itemGO = Instantiate(inventoryItemPrefab, inventoryContent);
-        
-        Image icon = itemGO.GetComponentInChildren<Image>();
-        TMP_Text nameText = itemGO.GetComponentInChildren<TMP_Text>();
+        if (inventoryStacks.TryGetValue(data, out int current))
+        {
+            current++;
+            inventoryStacks[data] = current;
+            UpdateRow(data, current);
+        }
+        else
+        {
+            inventoryStacks[data] = 1;
+            CreateRow(data, 1);
+        }
+    }
+
+    private void CreateRow(PickUpData data, int amount, bool forceNewRow = false)
+    {
+        if (!forceNewRow && inventoryRows.TryGetValue(data, out var existing))
+        {
+            UpdateRow(data, amount);
+            return;
+        }
+
+        var row = Instantiate(inventoryItemPrefab, inventoryContent);
+        inventoryRows[data] = row;
+
+        var icon = row.GetComponentInChildren<Image>(true);
+        var label = row.GetComponentInChildren<TMP_Text>(true);
 
         if (icon) icon.sprite = data.icon;
-        if (nameText) nameText.text = data.displayName;
+        if (label) label.text = BuildItemLabel(data.displayName, amount);
+    }
+
+    private void UpdateRow(PickUpData data, int amount)
+    {
+        if (!inventoryRows.TryGetValue(data, out var row)) return;
+
+        var label = row.GetComponentInChildren<TMP_Text>(true);
+        if (label) label.text = BuildItemLabel(data.displayName, amount);
+    }
+
+    private string BuildItemLabel(string nameitem, int amount)
+    {
+        return amount > 1 ? $"{nameitem} x{amount}" : nameitem;
     }
 
 }

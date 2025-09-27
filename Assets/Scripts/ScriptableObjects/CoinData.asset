@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Coin
   icon: {fileID: 0}
   pickUpSound: {fileID: 8300000, guid: 7df18dd26675e4261872e9995b2f697a, type: 3}
-  worldPrefab: {fileID: 0}
   goesToInventory: 0
+  stackable: 0
   value: 1
