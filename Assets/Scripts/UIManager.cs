@@ -125,7 +125,7 @@ public class UIManager : MonoBehaviour
         int value = HasItemByName("Magnet") ? 2 : 1;
         coinCount += value;
 
-        if (coinText) coinText.text = $"Coins: {coinCount}";
+        if (coinText) coinText.text = $"Monedas: {coinCount}";
     }
 
     
