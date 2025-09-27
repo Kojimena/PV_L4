@@ -10,6 +10,7 @@ TagManager:
   - coin
   - heart
   - key
+  - magnet
   layers:
   - Default
   - TransparentFX
