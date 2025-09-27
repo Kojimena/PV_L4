@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 
@@ -73,7 +74,7 @@ public class UIManager : MonoBehaviour
     
     private void UpdateDoorUI()
     {
-        if (HasKeyByName("Key")) 
+        if (HasItemByName("Key")) 
         {
             if (doorObject) doorObject.SetActive(false);
             if (doorText) doorText.text = string.Empty;
@@ -97,45 +98,55 @@ public class UIManager : MonoBehaviour
     }
 
     
-    private bool HasKeyByName(string keyName)
+    public bool HasItemByName(string itemName)
     {
         foreach (var kvp in inventoryStacks)
         {
-            if (kvp.Key.displayName == keyName && kvp.Value > 0)
+            if (kvp.Key.displayName == itemName && kvp.Value > 0)
             {
                 return true;
             }
         }
-    
+
         foreach (var row in inventoryRows.Keys)
         {
-            if (row.displayName == keyName)
+            if (row.displayName == itemName)
             {
                 return true;
             }
         }
-    
+
         return false;
     }
-
     
 
     private void UpdateCoins()
     {
-        coinCount++;
-        coinText.text = $"Coins: {coinCount}";
+        int value = HasItemByName("Magnet") ? 2 : 1;
+        coinCount += value;
+
+        if (coinText) coinText.text = $"Coins: {coinCount}";
     }
+
     
     private void UpdateLivesUI(int currentLives, int maxLives)
     {
-        foreach (Transform child in livesPanel)
+        if (!livesPanel)
         {
-            Destroy(child.gameObject);
+            //TODO: quitar este warning y manejar el error de otra forma
+            Debug.LogWarning("UIManager: livesPanel es null o fue destruido.");
+            return;
+        }
+
+        for (int i = livesPanel.childCount - 1; i >= 0; i--)
+        {
+            var child = livesPanel.GetChild(i);
+            if (child) Destroy(child.gameObject);
         }
 
         for (int i = 0; i < currentLives; i++)
         {
-            Instantiate(heartPrefab, livesPanel);
+            if (heartPrefab) Instantiate(heartPrefab, livesPanel);
         }
     }
 
